@@ -34,6 +34,9 @@ public class User  implements UserDetails{
     @JoinTable(name="user_role",joinColumns = @JoinColumn(name="user",referencedColumnName = "userid"),inverseJoinColumns = @JoinColumn(name="role",referencedColumnName = "id"))
     private Set<Role>roles = new HashSet<>();
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Book> books = new ArrayList<>();
+	
     @Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority>authorities=this.roles.stream().map((role)->new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());

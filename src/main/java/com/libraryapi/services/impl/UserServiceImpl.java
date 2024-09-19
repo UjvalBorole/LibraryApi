@@ -32,18 +32,23 @@ public class UserServiceImpl implements UserServices{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public User fetchUser(Integer userId){
+        return this.userRepo.findById(userId)
+        .orElseThrow(()->new ResourceNotFoundException("User", "Id", userId));
+    }
+
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.modelMapper.map(userDto, User.class);
         user.setUserimage("default.jpeg");
         User savedUSer = this.userRepo.save(user);
+
         return this.modelMapper.map(savedUSer, UserDto.class);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto,Integer userId) {
-      User user =  this.userRepo.findById(userId)
-       .orElseThrow(()->new ResourceNotFoundException("User", "Id", userId));
+      User user =  fetchUser(userId);
        user.setFullName(userDto.getFullName());
        user.setEmail(userDto.getEmail());
        user.setPhonenumber(userDto.getPhonenumber());
@@ -55,9 +60,7 @@ public class UserServiceImpl implements UserServices{
 
     @Override
     public UserDto getUserByID(Integer userId) {
-        User user =  this.userRepo.findById(userId)
-        .orElseThrow(()->new ResourceNotFoundException("User", "Id", userId));
-        return this.modelMapper.map(user, UserDto.class);
+        return this.modelMapper.map(fetchUser(userId), UserDto.class);
     }
 
     @Override
@@ -69,15 +72,12 @@ public class UserServiceImpl implements UserServices{
 
     @Override
     public void deleteUser(Integer userId) {
-        User user =  this.userRepo.findById(userId)
-        .orElseThrow(()->new ResourceNotFoundException("User", "Id", userId));
-        this.userRepo.delete(user);
+           this.userRepo.delete(fetchUser(userId));
     }
 
     @Override
     public void changePass(UserDto userDto,Integer userId) {
-        User user =  this.userRepo.findById(userId)
-        .orElseThrow(()->new ResourceNotFoundException("User", "Id", userId));
+        User user = fetchUser(userId);
         user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         this.userRepo.save(user);
     }

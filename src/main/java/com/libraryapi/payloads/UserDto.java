@@ -1,5 +1,12 @@
 package com.libraryapi.payloads;
 
+import java.util.*;
+
+import org.hibernate.annotations.ManyToAny;
+
+import com.libraryapi.entities.Book;
+
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,4 +36,7 @@ public class UserDto {
     private String phonenumber;
     
     private String userimage;
+
+   
+    List<BookDto>books = new ArrayList<>();
 }
