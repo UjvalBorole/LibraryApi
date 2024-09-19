@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.libraryapi.payloads.ApiResponse;
@@ -23,7 +20,6 @@ import com.libraryapi.services.UserServices;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -66,15 +62,15 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUser/{userId}")
-    public ApiResponse deleteUser(@PathVariable Integer userId){
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer userId){
         this.userServices.deleteUser(userId);
-        return new ApiResponse("User Deleted Successfully",true);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("User Deleted Successfully",true),HttpStatus.OK);
     }
 
     @PostMapping("/changePass/{userId}")
-    public ApiResponse changePassword(@RequestBody UserDto userDto, @PathVariable Integer userId){
+    public ResponseEntity<ApiResponse>  changePassword(@RequestBody UserDto userDto, @PathVariable Integer userId){
         this.userServices.changePass(userDto, userId);
-        return new ApiResponse("Password has been changed Successfuly",true);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Password has been changed Successfuly",true),HttpStatus.OK);
     } 
 
     @PostMapping("/image/upload/{userId}")
