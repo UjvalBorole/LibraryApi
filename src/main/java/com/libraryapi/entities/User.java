@@ -30,6 +30,12 @@ public class User  implements UserDetails{
 
     private String userimage;
 
+	// @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // private List<Likes> likes = new ArrayList<>();
+
+	@OneToMany(mappedBy ="user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Likes>likes = new ArrayList<>();
+
     @ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinTable(name="user_role",joinColumns = @JoinColumn(name="user",referencedColumnName = "userid"),inverseJoinColumns = @JoinColumn(name="role",referencedColumnName = "id"))
     private Set<Role>roles = new HashSet<>();

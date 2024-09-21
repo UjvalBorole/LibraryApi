@@ -34,10 +34,12 @@ public class SecurityConfig {
 	
 	public static final String[] PUBLIC_URLS= {
 			"/api/auth/**",
-			"/api/user/**",
-            "/api/categories/**",
-            "/api/book/**",
-            "/api/content/**",
+            // "/api/printable/",
+			// "/api/user/**",
+            // "/api/categories/**",
+            // "/api/book/**",
+            // "/api/content/**",
+            // "/api/like/**",
             
 	};
 	
@@ -52,46 +54,12 @@ public class SecurityConfig {
 	
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//    	http
-//        .csrf(csrf -> csrf.disable()) // Disable CSRF protection (can be enabled if needed)
-//        .authorizeHttpRequests(auth -> auth
-//            // Specify public URLs here (replace PUBLIC_URLS)
-//            .requestMatchers("/public/**").permitAll() 
-//            .anyRequest().authenticated() // All other requests require authentication
-//        )
-//        .exceptionHandling(exception -> exception
-//            .authenticationEntryPoint(authenticationEntryPoint()) // Specify the entry point
-//        )
-//        .sessionManagement(session -> session
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Set stateless session management
-//        );            
-//        http.authenticationProvider(daoAuthenticationProvider());
-//        
-//        return http.build();
-    	
-//    	 http
-//         .csrf(csrf -> csrf.disable())
-//         .authorizeHttpRequests(auth -> auth
-//             .requestMatchers("/public/**").permitAll()  // Public endpoints
-//             .anyRequest().authenticated()  // Requires authentication for other requests
-//         )
-//         .exceptionHandling(exception -> exception
-//             .authenticationEntryPoint(authenticationEntryPoint())  // Handle unauthorized access
-//         )
-//         .sessionManagement(session -> session
-//             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless session management
-//         )
-//         .authenticationProvider(daoAuthenticationProvider());  // Use custom authentication provider
-//
-//     return http.build();
-    	
-    	
+
             http
-//                .csrf(Customizer.withDefaults())
             	.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                 	.requestMatchers(PUBLIC_URLS).permitAll()
-                	.requestMatchers(HttpMethod.GET).permitAll() 
+                	// .requestMatchers(HttpMethod.GET).permitAll() 
                     .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

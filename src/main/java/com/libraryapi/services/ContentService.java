@@ -1,5 +1,6 @@
 package com.libraryapi.services;
 
+import com.libraryapi.entities.Content;
 import com.libraryapi.payloads.ContentDto;
 import com.libraryapi.payloads.ContentResponse;
 
@@ -17,6 +18,7 @@ public interface ContentService {
     //get all content
     List<ContentDto>getAllContentsByBookId(Integer bookId);
 
+    Content fetchContent(Integer contentId);
 
     ContentDto getContentByBookAndPageNo(Integer bookId,Integer pageno);
 

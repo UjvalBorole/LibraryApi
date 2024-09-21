@@ -54,6 +54,7 @@ public class AuthController {
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
 		try {
 		this.authenticationManager.authenticate(authenticationToken);
+		// System.out.println(username +" " +password);
 		}catch(BadCredentialsException e) {
 			System.out.println("Invalid Username or Password !");
 			throw new ApiExceptions("Invalid Username or Password !");

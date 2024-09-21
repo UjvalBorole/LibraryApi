@@ -34,6 +34,7 @@ public class ContentServiceImpl implements ContentService{
     @Autowired
     private BookRepo bookRepo;
 
+    @Override
      public Content fetchContent(Integer contentId){
         return this.contentRepo.findById(contentId)
                 .orElseThrow(()->new ResourceNotFoundException("Content", "contentId", contentId));
