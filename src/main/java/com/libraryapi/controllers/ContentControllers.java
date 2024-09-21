@@ -1,16 +1,26 @@
 package com.libraryapi.controllers;
 
+import java.io.InputStream;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.libraryapi.payloads.ApiResponse;
 import com.libraryapi.payloads.ContentDto;
 import com.libraryapi.payloads.ContentResponse;
 import com.libraryapi.services.ContentService;
+import com.libraryapi.services.FileService;
+
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/content")
@@ -18,6 +28,15 @@ public class ContentControllers {
 
     @Autowired
     private ContentService contentService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+	private FileService fileservice;
+	
+	@Value("${Content.image}")
+	private String path;
 
     @PostMapping("/{bookId}")
     public ResponseEntity<ContentDto>createContent(@RequestBody ContentDto contentDto,@PathVariable Integer bookId){
@@ -61,4 +80,39 @@ public class ContentControllers {
         ContentDto contentDto = this.contentService.getContentByBookAndContentTitleContaining(bookId, keyword);
         return new ResponseEntity<>(contentDto,HttpStatus.OK);
     }
+
+    //post image upload
+	@PostMapping("/image/upload/{contentId}/{imgId}")
+	public ResponseEntity<ContentDto>uploadPostImage(
+			@RequestParam("image") MultipartFile image,
+			@PathVariable Integer contentId,
+            @PathVariable Integer imgId
+			) throws IOException, java.io.IOException{
+		ContentDto contentDto = this.modelMapper.map(this.contentService.fetchContent(contentId), ContentDto.class);
+		String fileName = this.fileservice.uploadImage(path, image);
+		if(imgId == 1)contentDto.setImage1(fileName);
+        else if(imgId == 2)contentDto.setImage2(fileName);
+        else if(imgId == 3)contentDto.setImage3(fileName);
+        else if(imgId == 4)contentDto.setImage4(fileName);
+        else if(imgId == 5)contentDto.setImage5(fileName);
+        else if(imgId == 6)contentDto.setImage6(fileName);
+        else if(imgId == 7)contentDto.setImage7(fileName);
+        else if(imgId == 8)contentDto.setImage8(fileName);
+        else if(imgId == 9)contentDto.setImage9(fileName);
+        else if(imgId == 10)contentDto.setImage10(fileName);
+		ContentDto updateBook = this.contentService.updateContent(contentDto,contentId);
+		return new ResponseEntity<ContentDto>(updateBook,HttpStatus.OK);
+	}
+	
+	//method to serve files
+	@GetMapping(value="/image/{imageName}",produces=MediaType.IMAGE_JPEG_VALUE)
+	public void downloadImage(
+			@PathVariable("imageName") String imageName,
+			HttpServletResponse response
+			) throws IOException, java.io.IOException {
+		InputStream resource = this.fileservice.getResource(path, imageName);
+		
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource,response.getOutputStream());
+	}
 }

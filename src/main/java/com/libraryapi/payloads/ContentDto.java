@@ -36,5 +36,5 @@ public class ContentDto {
     private String image10;
     
     
-    BookDto book;
+    private BookDto book;
 }

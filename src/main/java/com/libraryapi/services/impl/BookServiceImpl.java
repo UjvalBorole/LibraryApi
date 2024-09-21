@@ -38,14 +38,6 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private CategoryServiceImp categoryServiceImp;
 
-    // void customBookDto(Book book){
-    // BookDto bookDto = new BookDto();
-    // System.out.println(book.getUser());
-    // bookDto.setUserDto(book.getUser());
-    // bookDto = modelMapper.map(book,BookDto.class);
-    // System.out.println(bookDto);
-    // System.out.println(bookDto.getUserDto());
-    // }
 
     public Book fetchBook(Integer bookId) {
         return this.bookRepo.findById(bookId)

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.libraryapi.entities.Comment;
+import com.libraryapi.entities.Content;
 import com.libraryapi.entities.User;
 import com.libraryapi.payloads.UserDto;
 
@@ -45,7 +47,8 @@ public class BookDto {
 	private UserDto userDto;
 
 
-	
 
-	// private Set<Comment>comments = new HashSet<>();
+	
+	// private Set<ContentDto>contents = new HashSet<>();
+	// private Set<CommentDto>comments = new HashSet<>();
 }

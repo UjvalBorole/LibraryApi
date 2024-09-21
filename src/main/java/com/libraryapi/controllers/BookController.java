@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +20,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.service.annotation.DeleteExchange;
 
-import com.libraryapi.entities.Book;
 import com.libraryapi.payloads.ApiResponse;
 import com.libraryapi.payloads.BookDto;
 import com.libraryapi.payloads.BookResponse;
-import com.libraryapi.payloads.UserDto;
 import com.libraryapi.services.BookService;
 import com.libraryapi.services.FileService;
 
@@ -37,6 +34,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/book")
+@EnableMethodSecurity(prePostEnabled = true)
 public class BookController {
 
     @Autowired
@@ -68,7 +66,8 @@ public class BookController {
         return new ApiResponse("Book was Deleted Successfully",true);
     }
 
-    //get all Posts
+    //get all books
+    @PreAuthorize("hasRole('USER')")
 	@GetMapping("/books")
 	public ResponseEntity<BookResponse>getAllPost(
 			@RequestParam(value="pageNumber",defaultValue="0",required=false)Integer pageNumber,
