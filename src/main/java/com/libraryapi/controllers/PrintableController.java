@@ -3,6 +3,8 @@ package com.libraryapi.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
@@ -12,6 +14,7 @@ import com.libraryapi.services.PrintableService;
 
 @RestController
 @RequestMapping("/api/printable")
+@EnableMethodSecurity(prePostEnabled = true)
 public class PrintableController {
     @Autowired
     private PrintableService printableService;
@@ -35,6 +38,7 @@ public class PrintableController {
 
 
     // updatePrintableByAdmin
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @PutMapping("/admin/{printId}")
     public ResponseEntity<PrintableDto>updatePrintableByAdmin(@RequestBody PrintableDto printableDto,@PathVariable Integer printId){
         PrintableDto printableDto2 = this.printableService.updatePrintableByAdmin(printId, printableDto);

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import com.libraryapi.payloads.ApiResponse;
@@ -15,12 +17,14 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/categories")
+@EnableMethodSecurity(prePostEnabled = true)
 public class CategoryController {
     
 	@Autowired
 	private CategoryService categoryService;
 	
 	//create
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<CategoryDto>createCategory(@Valid @RequestBody CategoryDto categoryDto){
 		CategoryDto createCategory = this.categoryService.createCategory(categoryDto);
@@ -28,6 +32,7 @@ public class CategoryController {
 	}
 	
 	//update
+    @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{catId}")
 	public ResponseEntity<CategoryDto>updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable Integer catId){
 		System.out.println(catId);
@@ -36,6 +41,7 @@ public class CategoryController {
 	}
 	
 	//delete
+    @PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{catId}")
 	public ResponseEntity<ApiResponse>deleteCategory(@PathVariable Integer catId){
 		this.categoryService.deleteCategory(catId);

@@ -1,5 +1,4 @@
 package com.libraryapi.entities;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name="user")
+@Table(name="user",uniqueConstraints = {@UniqueConstraint(columnNames = {"email", "phone"})})
 @NoArgsConstructor
 @Getter
 @Setter
@@ -22,6 +21,7 @@ public class User  implements UserDetails{
 
     private String fullName;
 
+	@Column(unique = true)
     private String email;
 
     private String password;

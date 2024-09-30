@@ -1,6 +1,7 @@
 package com.libraryapi.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserServices{
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.modelMapper.map(userDto, User.class);
-        user.setUserimage("default.jpeg");
+        user.setUserimage("default.png");
         User savedUSer = this.userRepo.save(user);
 
         return this.modelMapper.map(savedUSer, UserDto.class);
@@ -64,6 +65,12 @@ public class UserServiceImpl implements UserServices{
     }
 
     @Override
+    public UserDto getUserByEmail(String email) {
+        Optional<User> user = this.userRepo.findByEmail(email);
+        return this.modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
     public List<UserDto> getAllUsers() {
        List<User>users = this.userRepo.findAll();
        List<UserDto>usersDtos = users.stream().map((user)->this.modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
@@ -82,13 +89,21 @@ public class UserServiceImpl implements UserServices{
         this.userRepo.save(user);
     }
 
+    public boolean isEmailUnique(String email) {
+        return userRepo.findByEmail(email).isEmpty();
+    }
+    
+
     @Override
     public UserDto registerNewUser(UserDto userDto,Integer roleId) {
         User user = this.modelMapper.map(userDto,User.class);
+        if (!isEmailUnique(userDto.getEmail())) {
+            throw new RuntimeException("Email already exists.");
+        }
 
         //encode the password
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        user.setUserimage("default.jpeg");
+        user.setUserimage("default.png");
         //roles
         Role role = this.roleRepo.findById(roleId).get();
         

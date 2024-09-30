@@ -25,6 +25,8 @@ public class PrintableDto {
     private Date printOrderdate;
 
     private boolean isdelivered;
+    private boolean paid;
+
 
     private String passState;
 

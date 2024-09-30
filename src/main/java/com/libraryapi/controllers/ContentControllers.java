@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.libraryapi.payloads.ApiResponse;
 import com.libraryapi.payloads.ContentDto;
-import com.libraryapi.payloads.ContentResponse;
 import com.libraryapi.services.ContentService;
 import com.libraryapi.services.FileService;
 
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/content")
+@EnableMethodSecurity(prePostEnabled = true)
 public class ContentControllers {
 
     @Autowired
@@ -38,12 +40,14 @@ public class ContentControllers {
 	@Value("${Content.image}")
 	private String path;
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @PostMapping("/{bookId}")
     public ResponseEntity<ContentDto>createContent(@RequestBody ContentDto contentDto,@PathVariable Integer bookId){
         ContentDto contentDto1 = this.contentService.createContent(contentDto, bookId);
         return new ResponseEntity<ContentDto>(contentDto1,HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @PutMapping("/{contentId}")
     public ResponseEntity<ContentDto>updateContent(@RequestBody ContentDto contentDto,@PathVariable Integer contentId){
         ContentDto contentDto1 = this.contentService.updateContent(contentDto, contentId);
@@ -51,6 +55,7 @@ public class ContentControllers {
     }
 
     //delete
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @DeleteMapping("/{contentId}")
     public ApiResponse deleteContent(@PathVariable Integer contentId){
         this.contentService.deleteContent(contentId);
@@ -63,9 +68,6 @@ public class ContentControllers {
         List<ContentDto> contentDtos = this.contentService.getAllContentsByBookId(bookId);
         return new ResponseEntity<>(contentDtos,HttpStatus.OK);
     }
-
- 
-
 
     //getContentByBookAndPageNo
     @GetMapping("/book/{bookId}/pageNo/{pageNo}")
@@ -80,10 +82,9 @@ public class ContentControllers {
         ContentDto contentDto = this.contentService.getContentByBookAndContentTitleContaining(bookId, keyword);
         return new ResponseEntity<>(contentDto,HttpStatus.OK);
     }
-
     //post image upload
 	@PostMapping("/image/upload/{contentId}/{imgId}")
-	public ResponseEntity<ContentDto>uploadPostImage(
+	public ResponseEntity<ContentDto>uploadContentImage(
 			@RequestParam("image") MultipartFile image,
 			@PathVariable Integer contentId,
             @PathVariable Integer imgId

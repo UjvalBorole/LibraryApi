@@ -11,5 +11,6 @@ import com.libraryapi.entities.User;
 
 public interface LikesRepo extends  JpaRepository<Likes,Integer>{
     List<Likes>findByBook(Book book);
-    Optional<Likes> findByUserAndBook(User user, Book book);
+    List<Likes>findByUser(User user);
+    Likes findByUserAndBook(User user, Book book);
 }

@@ -9,5 +9,6 @@ public interface ViewService {
     ViewsDto createviews(Integer userId,Integer bookId);
     void deleteviews(Integer viewId);
     List<ViewsDto>getAllviewsByBook(Integer bookId);
+    List<ViewsDto> getAllViewsByUser(Integer userId);
     List<ViewsDto>getAllviews();
 }

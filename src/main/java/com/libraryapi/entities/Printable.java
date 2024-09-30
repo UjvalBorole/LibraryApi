@@ -31,6 +31,8 @@ public class Printable {
 
     private Date expectedDate;
 
+    private boolean paid;
+
      // Many Likes can belong to one User
      @ManyToOne
      @JoinColumn(name = "user_id", nullable = false)

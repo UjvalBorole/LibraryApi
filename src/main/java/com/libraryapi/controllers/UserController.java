@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
+@EnableMethodSecurity(prePostEnabled = true)
 public class UserController {
     @Autowired
     private UserServices userServices;
@@ -48,19 +51,27 @@ public class UserController {
         UserDto updateUser = this.userServices.updateUser(userDto, userId);
         return new ResponseEntity<>(updateUser,HttpStatus.OK);
     }
-
-    @GetMapping("/getUser/{userId}")
+// /api/user/user/{userId}
+    @GetMapping("/{userId}")
     public ResponseEntity<UserDto>getUserById(@PathVariable Integer userId){
         UserDto  userDto = this.userServices.getUserByID(userId);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
 
+    @GetMapping("/getUserByEmail/{email}")
+    public ResponseEntity<UserDto>getUserByEmail(@PathVariable String email){
+        UserDto  userDto = this.userServices.getUserByEmail(email);
+        return new ResponseEntity<>(userDto,HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getAllUsers")
     public ResponseEntity<List<UserDto>>getAllUsers(){
         List<UserDto>users = this.userServices.getAllUsers();
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser/{userId}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer userId){
         this.userServices.deleteUser(userId);
@@ -94,4 +105,5 @@ public class UserController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource, response.getOutputStream());
     }
+
 }

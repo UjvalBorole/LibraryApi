@@ -10,5 +10,5 @@ import com.libraryapi.entities.User;
 
 public interface OrderRepo extends  JpaRepository<Orders,Integer>{
     List<Orders>findByUser(User user);
-    Optional<Orders> findByUserAndBook(User user, Book book);
+    Orders findByUserAndBook(User user, Book book);
 }

@@ -5,7 +5,7 @@ import lombok.*;
 import java.util.*;
 
 @Entity
-// @Table(name = "likes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "book_id"})})
+@Table(name = "views", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "book_id"})})
 @Getter
 @Setter
 public class Views {
@@ -22,4 +22,8 @@ public class Views {
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
+
+    Boolean isPresent(){
+        return true;
+    }
 }

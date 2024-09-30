@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 
 import com.libraryapi.repository.OrderRepo;
 import com.libraryapi.entities.Orders;
+import com.libraryapi.entities.Book;
 import com.libraryapi.entities.User;
 import com.libraryapi.exceptions.ResourceNotFoundException;
 import com.libraryapi.payloads.OrderDto;
+import com.libraryapi.payloads.UserDto;
 import com.libraryapi.services.OrderService;
 
 @Service
@@ -48,6 +50,15 @@ public class OrderServiceImpl implements OrderService{
          Orders order = this.orderRepo.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "orderId", orderId));
         return this.modelmapper.map(order, OrderDto.class);
+     }
+     @Override
+    public OrderDto getOrderByUserAndBook(Integer userId,Integer bookId) {
+        User user = this.userServiceImpl.fetchUser(userId);
+        Book book = this.bookServiceImpl.fetchBook(bookId);
+         Orders order = this.orderRepo.findByUserAndBook(user,book);
+         OrderDto orderDto = this.modelmapper.map(order, OrderDto.class);       
+         orderDto.setUser(this.modelmapper.map(user, UserDto.class));
+        return orderDto;
      }
 
     @Override

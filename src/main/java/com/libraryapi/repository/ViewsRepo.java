@@ -11,5 +11,6 @@ import com.libraryapi.entities.Views;
 
 public interface ViewsRepo extends  JpaRepository<Views,Integer>{
     List<Views>findByBook(Book book);
-    Optional<Views> findByUserAndBook(User user, Book book);
+    List<Views>findByUser(User user);
+    Views findByUserAndBook(User user, Book book);
 }

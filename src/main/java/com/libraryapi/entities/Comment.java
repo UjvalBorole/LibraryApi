@@ -1,6 +1,7 @@
 package com.libraryapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
 
 @Entity
 @Table(name="comments")
@@ -13,7 +14,9 @@ public class Comment {
 	private int id;
 	
 	private String content;
-	
+
+	private Date date;
+
 	@ManyToOne
 	private Book book;
 	

@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
     public BookDto createBook(BookDto bookDto, Integer userId, Integer categoryId) {
         User user = this.userServiceImpl.fetchUser(userId);
         Book book = this.modelMapper.map(bookDto, Book.class);
-        book.setBookImageName("defaultBook.jpeg");
+        book.setBookImageName("defaultBook.jfif");
         book.setBookAddedDate(new Date());
         book.setCategory(this.categoryServiceImp.fetchCategory(categoryId));
         book.setUser(user);

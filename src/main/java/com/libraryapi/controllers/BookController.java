@@ -46,6 +46,7 @@ public class BookController {
     @Value("${Book.image}")
     private String path;
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @PostMapping("/user/{userId}/category/{categoryId}")
     public ResponseEntity<BookDto>createBook(
         @Valid @RequestBody BookDto bookDto,@PathVariable Integer userId, @PathVariable Integer categoryId
@@ -54,12 +55,14 @@ public class BookController {
         return new ResponseEntity<>(bookDto1,HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @PutMapping("/{bookId}")
     public ResponseEntity<BookDto>updateBook(@RequestBody BookDto bookDto,@PathVariable Integer bookId){
         BookDto bookDto1 = this.bookService.updateBook(bookDto, bookId);
         return new ResponseEntity<>(bookDto1,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('AUTHOR')")
     @DeleteMapping("/{bookId}")
     public ApiResponse deleteBook(@PathVariable Integer bookId){
         this.bookService.deleteBook(bookId);
@@ -67,9 +70,9 @@ public class BookController {
     }
 
     //get all books
-    @PreAuthorize("hasRole('USER')")
+   
 	@GetMapping("/books")
-	public ResponseEntity<BookResponse>getAllPost(
+	public ResponseEntity<BookResponse>getAllBook(
 			@RequestParam(value="pageNumber",defaultValue="0",required=false)Integer pageNumber,
 			@RequestParam(value="pageSize",defaultValue="10",required=false)Integer pageSize,
 			@RequestParam(value="sortBy",defaultValue="bookId",required=false)String sortBy,
@@ -79,30 +82,36 @@ public class BookController {
 		return new ResponseEntity<BookResponse>(bookResponse,HttpStatus.OK);
 	}
 
+   
     @GetMapping("/{bookId}")
     public ResponseEntity<BookDto>getBookById(@PathVariable Integer bookId){
         BookDto bookDto = this.bookService.getBookById(bookId);
         return new ResponseEntity<>(bookDto,HttpStatus.OK);
     }
 
+    
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<BookDto>>getBookByCategory(@PathVariable Integer categoryId){
         List<BookDto>bookDtos = this.bookService.getBooksByCategory(categoryId);
         return new ResponseEntity<>(bookDtos,HttpStatus.OK);
     }
 
+    
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BookDto>>getBookByUser(@PathVariable Integer userId){
         List<BookDto>bookDtos = this.bookService.getBooksByUser(userId);
         return new ResponseEntity<>(bookDtos,HttpStatus.OK);
     }
 
+    // /api/book/search/{keyword}
+   
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<List<BookDto>>getBookByUser(@PathVariable String keyword){
+    public ResponseEntity<List<BookDto>>getBookBySearch(@PathVariable String keyword){
         List<BookDto>bookDtos = this.bookService.searchBooks(keyword);
         return new ResponseEntity<>(bookDtos,HttpStatus.OK);
     }
 
+  
      @PostMapping("/image/upload/{bookId}")
     public ResponseEntity<BookDto>uploadUserImage(
         @RequestParam("image") MultipartFile image,

@@ -11,9 +11,12 @@ import java.util.stream.Collectors;
 import com.libraryapi.entities.Book;
 import com.libraryapi.entities.Likes;
 import com.libraryapi.entities.User;
+import com.libraryapi.entities.Views;
 import com.libraryapi.exceptions.ResourceNotFoundException;
+import com.libraryapi.payloads.BookDto;
 import com.libraryapi.payloads.LikesDto;
 import com.libraryapi.payloads.UserDto;
+import com.libraryapi.payloads.ViewsDto;
 import com.libraryapi.repository.LikesRepo;
 import com.libraryapi.services.LikeService;
 
@@ -32,11 +35,15 @@ public class LikeServiceImpl implements LikeService{
     @Autowired
     private BookServiceImpl bookServiceImpl;
 
+         
     @Override
     public LikesDto createLikes(Integer userId, Integer bookId) {
         User user = this.userServiceImpl.fetchUser(userId);
         Book book = this.bookServiceImpl.fetchBook(bookId);
-    
+        Likes existingView = likesRepo.findByUserAndBook(user, book);
+        if (existingView != null) {
+            likesRepo.delete(existingView);
+        }
         Likes likes = new Likes();
         likes.setBook(book);
         likes.setUser(user);
@@ -57,7 +64,7 @@ public class LikeServiceImpl implements LikeService{
     public List<LikesDto> getAllLikesByBook(Integer bookId) {
         Book book = this.bookServiceImpl.fetchBook(bookId);
         List<Likes>likes = this.likesRepo.findByBook(book);
-        System.out.println("List<Likes>likes "+likes.get(0).getLikeId()+" " +likes.get(0).getBook());
+        // System.out.println("List<Likes>likes "+likes.get(0).getLikeId()+" " +likes.get(0).getBook());
         // List<LikesDto> likesDtos =  likes.stream().map((like) -> {
         //     LikesDto likeDto = this.modelMapper.map(like, LikesDto.class);
         //     UserDto user = this.modelMapper.map(like.getUser(), UserDto.class);
@@ -74,6 +81,32 @@ public class LikeServiceImpl implements LikeService{
     public List<LikesDto> getAllLikes() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAllLikes'");
+    }
+
+    @Override
+    public List<LikesDto> getAllLikesByUser(Integer userId) {
+        User user = this.userServiceImpl.fetchUser(userId);
+        List<Likes>likes = this.likesRepo.findByUser(user);
+        List<LikesDto> likesDtos = likes.stream().map((like)->{
+            LikesDto likesDto  = this.modelMapper.map(like, LikesDto.class);
+            UserDto userDto = this.modelMapper.map(like.getUser(),UserDto.class);
+            BookDto bookDto = this.modelMapper.map(like.getBook(),BookDto.class);
+            likesDto.setBook(bookDto);
+            likesDto.setUser(userDto);
+            return likesDto;
+        }).collect(Collectors.toList());
+        return likesDtos;
+    }
+
+    @Override
+    public LikesDto getLikeByUserAndBook(Integer userId, Integer bookId) {
+        User user = this.userServiceImpl.fetchUser(userId);
+        Book book = this.bookServiceImpl.fetchBook(bookId);
+        Likes like = likesRepo.findByUserAndBook(user, book);
+        LikesDto likesDto = this.modelMapper.map(like,LikesDto.class);
+        likesDto.setBook(this.modelMapper.map(like.getBook(),BookDto.class));
+        likesDto.setUser(this.modelMapper.map(like.getUser(),UserDto.class));
+        return likesDto;
     }
 
 }

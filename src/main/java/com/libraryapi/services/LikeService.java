@@ -9,4 +9,6 @@ public interface LikeService {
     void deleteLikes(Integer likeId);
     List<LikesDto>getAllLikesByBook(Integer bookId);
     List<LikesDto>getAllLikes();
+     List<LikesDto> getAllLikesByUser(Integer userId) ;
+    LikesDto getLikeByUserAndBook(Integer userId, Integer bookId);
 }

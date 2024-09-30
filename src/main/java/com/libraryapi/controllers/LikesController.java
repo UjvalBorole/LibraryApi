@@ -40,11 +40,30 @@ public class LikesController {
         return new ApiResponse("Liked was Deleted Successfully",true);
     }
     //getAllLikesByBook
-    @GetMapping("/{bookId}")
+    @GetMapping("/book/{bookId}")
     public ResponseEntity<List<LikesDto>>getAllLikesByBook(
         @PathVariable Integer bookId
     ){
         List<LikesDto>likesDtos = this.likeService.getAllLikesByBook(bookId);
+        return new ResponseEntity<>(likesDtos,HttpStatus.OK);
+    }
+
+        //getLikeByUserAndBook
+    @GetMapping("/user/{userId}/book/{bookId}")
+    public ResponseEntity<LikesDto>getLikeByUserAndBook(
+         @PathVariable Integer userId, @PathVariable Integer bookId
+    ){
+        LikesDto likesDto1 = this.likeService.getLikeByUserAndBook(userId, bookId);
+        return new ResponseEntity<>(likesDto1,HttpStatus.OK);
+    }
+
+    //getLikeByUser
+    // /api/like/user/{userId}
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<LikesDto>>getLikeByUser(
+         @PathVariable Integer userId
+    ){
+        List<LikesDto>likesDtos = this.likeService.getAllLikesByUser(userId);
         return new ResponseEntity<>(likesDtos,HttpStatus.OK);
     }
 }

@@ -34,7 +34,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 		String requestToken = request.getHeader("Authorization");
 		
 		//Bearer 232323sdgsg
-		System.out.println("Token "+requestToken);
+		// System.out.println("Token "+requestToken);
 		
 		String username = null;
 		
@@ -42,19 +42,19 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 		
 		if(requestToken != null && requestToken.startsWith("Bearer")) {
 			token = requestToken.substring(7);
-			System.out.println("Token "+token);
+			// System.out.println("Token "+token);
 			try {
 			username = this.jwtTokenHelper.getUsernameFromToken(token);
 			}catch(IllegalArgumentException e) {
-				System.out.println("Unable to get Jwt token");
+				// System.out.println("Unable to get Jwt token");
 			}catch(ExpiredJwtException e) {
-				System.out.println("Jwt token has expired");
+				// System.out.println("Jwt token has expired");
 			}catch(MalformedJwtException e) {
-				System.out.println("Invalid jwt");
+				// System.out.println("Invalid jwt");
 			}
 			
 		}else {
-			System.out.println("JWT Token doesn't start with Bearer !!");
+			// System.out.println("JWT Token doesn't start with Bearer !!");
 		}
 		
 		//once we get the token, now validate
@@ -67,10 +67,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
 				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}else {
-				System.out.println("Invalid Jwt Token");
+				// System.out.println("Invalid Jwt Token");
 			}
 		}else {
-			System.out.println("User name is null or Context is null");
+			// System.out.println("User name is null or Context is null");
 		}
 		
 		

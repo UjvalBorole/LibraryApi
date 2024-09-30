@@ -27,7 +27,7 @@ public class ViewsController {
 
     @Autowired
     private ViewService viewsService;
-
+    // /api/views/user/{userId}/book/{bookId}
     @PostMapping("/user/{userId}/book/{bookId}")
     public ResponseEntity<ViewsDto>createview(
          @PathVariable Integer userId, @PathVariable Integer bookId
@@ -42,11 +42,19 @@ public class ViewsController {
         return new ApiResponse("Views was Deleted Successfully",true);
     }
     //getAllLikesByBook
-    @GetMapping("/{bookId}")
+    @GetMapping("/book/{bookId}")
     public ResponseEntity<List<ViewsDto>>getAllViewsByBook(
         @PathVariable Integer bookId
     ){
         List<ViewsDto>viewsDtos = this.viewsService.getAllviewsByBook(bookId);
+        return new ResponseEntity<>(viewsDtos,HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ViewsDto>>getAllViewsByUser(
+        @PathVariable Integer userId
+    ){
+        List<ViewsDto>viewsDtos = this.viewsService.getAllViewsByUser(userId);
         return new ResponseEntity<>(viewsDtos,HttpStatus.OK);
     }
 }

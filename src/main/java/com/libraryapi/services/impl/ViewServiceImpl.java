@@ -12,6 +12,7 @@ import com.libraryapi.entities.Book;
 import com.libraryapi.entities.User;
 import com.libraryapi.entities.Views;
 import com.libraryapi.exceptions.ResourceNotFoundException;
+import com.libraryapi.payloads.BookDto;
 import com.libraryapi.payloads.UserDto;
 import com.libraryapi.payloads.ViewsDto;
 import com.libraryapi.repository.ViewsRepo;
@@ -31,16 +32,25 @@ public class ViewServiceImpl implements ViewService{
     @Autowired
     private BookServiceImpl bookServiceImpl;
 
+    public boolean isUserBook(User user, Book book) {
+        return ((List<Views>) viewsRepo.findByUserAndBook(user,book)).isEmpty();
+    }
     @Override
     public ViewsDto createviews(Integer userId, Integer bookId) {
         User user = this.userServiceImpl.fetchUser(userId);
         Book book = this.bookServiceImpl.fetchBook(bookId);
+        Views existingView = viewsRepo.findByUserAndBook(user, book);
+        if (existingView != null) {
+            viewsRepo.delete(existingView);
+        }
     
         Views view = new Views();
         view.setBook(book);
         view.setUser(user);
         Views view1 = this.viewsRepo.save(view);
         ViewsDto viewsDto =this.modelMapper.map(view1,ViewsDto.class);
+        BookDto bookDto = this.bookServiceImpl.getBookById(bookId);
+        viewsDto.setBook(bookDto);
         return viewsDto;
     }
 
@@ -57,6 +67,19 @@ public class ViewServiceImpl implements ViewService{
         Book book = this.bookServiceImpl.fetchBook(bookId);
         List<Views>views = this.viewsRepo.findByBook(book);
         List<ViewsDto> viewsDtos =  views.stream().map((view) -> this.modelMapper.map(view, ViewsDto.class)).collect(Collectors.toList());
+        return viewsDtos;
+    }
+
+    @Override
+    public List<ViewsDto> getAllViewsByUser(Integer userId) {
+        User user = this.userServiceImpl.fetchUser(userId);
+        List<Views>views = this.viewsRepo.findByUser(user);
+        List<ViewsDto> viewsDtos =  views.stream().map((view) -> this.modelMapper.map(view, ViewsDto.class)).collect(Collectors.toList());
+        for(ViewsDto v:viewsDtos){
+            Integer i = v.getBook().getBookId();
+            BookDto booksDto = this.bookServiceImpl.getBookById(i);
+            v.setBook(booksDto);
+        }
         return viewsDtos;
     }
 
